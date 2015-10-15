@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.robolectric'
 
 android {
     compileSdkVersion 23
@@ -18,7 +19,51 @@ android {
     }
 }
 
+android.testOptions.unitTests.all {
+    // Configure includes / excludes
+    include '**/*Test.class'
+    exclude '**/espresso/**/*.class'
+
+    // Configure max heap size of the test JVM
+    maxHeapSize = '2048m'
+
+    // Configure the test JVM arguments - Does not apply to Java 8
+    jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
+
+    // Specify max number of processes (default is 1)
+    maxParallelForks = 4
+
+    // Specify max number of test classes to execute in a test process
+    // before restarting the process (default is unlimited)
+    forkEvery = 150
+
+    // configure whether failing tests should fail the build
+    ignoreFailures true
+
+    // use afterTest to listen to the test execution results
+    afterTest { descriptor, result ->
+        println "Executing test for ${descriptor.name} with result: ${result.resultType}"
+    }
+}
+
+
+//for resources for unit tests
+//https://github.com/codepath/android_guides/wiki/Robolectric-Installation-for-Unit-Testing
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/intermediates/classes/test/debug"
+}
+
+assembleDebug.dependsOn(copyTestResources)
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.1'
+
+    testCompile 'junit:junit:4.12'
+    testCompile('org.robolectric:robolectric:3.0') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+    testCompile "org.mockito:mockito-core:1.9.5"
 }
