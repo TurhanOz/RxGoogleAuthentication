@@ -9,7 +9,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 
 //https://github.com/nenick/android-gradle-template/blob/master/appCt/src/test/java/com/example/project/robolectric/CostomRobolectricTestRunner.java
-public class CustomRunner extends RobolectricGradleTestRunner {
+public class CustomRunnerWithMoreShadows extends RobolectricGradleTestRunner {
     /**
      * Creates a runner to run {@code testClass}. Looks in your working directory for your AndroidManifest.xml file
      * and res directory by default. Use the {@link } annotation to configure.
@@ -17,7 +17,7 @@ public class CustomRunner extends RobolectricGradleTestRunner {
      * @param testClass the test class to be run
      * @throws InitializationError if junit says so
      */
-    public CustomRunner(Class<?> testClass) throws InitializationError {
+    public CustomRunnerWithMoreShadows(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

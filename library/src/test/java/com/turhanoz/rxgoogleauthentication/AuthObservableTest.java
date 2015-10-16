@@ -16,11 +16,10 @@ import java.util.Arrays;
 
 import rx.observers.TestSubscriber;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRunner.class)
+@RunWith(CustomRunnerWithMoreShadows.class)
 @Config(constants = BuildConfig.class, sdk = 21, shadows = {ShadowGoogleAuthUtil.class})
 public class AuthObservableTest {
     Context context;
