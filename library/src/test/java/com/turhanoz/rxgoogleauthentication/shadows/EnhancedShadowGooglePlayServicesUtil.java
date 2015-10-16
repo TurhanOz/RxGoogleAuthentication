@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.rxgoogleauthentication.shadows;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 
 @Implements(GooglePlayServicesUtil.class)
 public class EnhancedShadowGooglePlayServicesUtil extends ShadowGooglePlayServicesUtil {
-    static Dialog mockDialog = mock(Dialog.class);
+    public static Dialog mockDialog = mock(Dialog.class);
 
     @Implementation
     public static Dialog getErrorDialog(int errorCode, Activity activity, int requestCode) {

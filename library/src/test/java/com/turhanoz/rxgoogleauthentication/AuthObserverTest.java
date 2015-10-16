@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.turhanoz.rxgoogleauthentication.shadows.EnhancedShadowGooglePlayServicesUtil;
 
 import org.junit.Before;
 import org.junit.Test;
