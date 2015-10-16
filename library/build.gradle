@@ -68,5 +68,7 @@ dependencies {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
+    testCompile'org.robolectric:shadows-play-services:3.0'
+
     testCompile "org.mockito:mockito-core:1.9.5"
 }

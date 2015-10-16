@@ -1,13 +1,13 @@
 package com.turhanoz.rxgoogleauthentication;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21, shadows = {EnhancedShadowGooglePlayServicesUtil.class})
 public class AuthObserverTest {
     AuthCallback mockCallback;
     Activity activity;
@@ -27,7 +27,6 @@ public class AuthObserverTest {
 
     @Before
     public void setUp() throws Exception {
-        // activity = Robolectric.setupActivity(Activity.class);
         activity = mock(Activity.class);
         mockCallback = mock(AuthCallback.class);
         sut = new AuthObserver(activity, mockCallback);
@@ -73,7 +72,6 @@ public class AuthObserverTest {
     }
 
     @Test
-    @Ignore // couldn't shadow GoogleAuthUtils for now...
     public void googlePlayServicesAvailabilityExceptionShouldNotNotifyCallback() throws Exception {
         Exception exception = mock(GooglePlayServicesAvailabilityException.class);
 
@@ -83,10 +81,12 @@ public class AuthObserverTest {
     }
 
     @Test
-    @Ignore // couldn't shadow GoogleAuthUtils for now...
-    public void ooglePlayServicesAvailabilityExceptionShouldBeResolved() throws Exception {
-        //test dialog shown based on statusCode
+    public void googlePlayServicesAvailabilityExceptionShouldBeResolved() throws Exception {
+        EnhancedShadowGooglePlayServicesUtil.mockDialog = mock(Dialog.class);
+        GooglePlayServicesAvailabilityException stubException = mock(GooglePlayServicesAvailabilityException.class);
+
+        sut.onError(stubException);
+
+        verify(EnhancedShadowGooglePlayServicesUtil.mockDialog).show();
     }
-
-
 }
