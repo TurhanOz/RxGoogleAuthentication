@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.turhanoz.rxgoogleauthentication.shadows.EnhancedShadowGooglePlayServicesUtil;
+import com.turhanoz.android.rxgoogleauthentication.shadows.EnhancedShadowGooglePlayServicesUtil;
 
 import org.junit.Before;
 import org.junit.Test;

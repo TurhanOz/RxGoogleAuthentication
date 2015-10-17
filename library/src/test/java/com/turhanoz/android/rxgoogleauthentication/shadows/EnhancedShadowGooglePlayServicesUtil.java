@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication.shadows;
+package com.turhanoz.android.rxgoogleauthentication.shadows;
 
 import android.app.Activity;
 import android.app.Dialog;

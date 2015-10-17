@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 import android.accounts.Account;
 import android.content.Context;

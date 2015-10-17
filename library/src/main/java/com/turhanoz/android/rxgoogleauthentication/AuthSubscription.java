@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -8,7 +8,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.turhanoz.rxgoogleauthentication.Utils.checkArgumentNotNull;
+import static com.turhanoz.android.rxgoogleauthentication.Utils.checkArgumentNotNull;
 
 public class AuthSubscription {
     Subscription subscription;

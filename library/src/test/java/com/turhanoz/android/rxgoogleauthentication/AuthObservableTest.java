@@ -1,10 +1,10 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 import android.accounts.Account;
 import android.content.Context;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.turhanoz.rxgoogleauthentication.shadows.ShadowGoogleAuthUtil;
+import com.turhanoz.android.rxgoogleauthentication.shadows.ShadowGoogleAuthUtil;
 
 import org.junit.Before;
 import org.junit.Ignore;

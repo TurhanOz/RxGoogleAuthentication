@@ -1,11 +1,9 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.turhanoz.rxgoogleauthentication.shadows.ShadowGoogleAuthUtil;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 
 //https://github.com/nenick/android-gradle-template/blob/master/appCt/src/test/java/com/example/project/robolectric/CostomRobolectricTestRunner.java

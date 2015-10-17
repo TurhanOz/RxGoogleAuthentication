@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 public class Utils {
     public static void checkArgumentNotNull(Object object, String qualifier) {

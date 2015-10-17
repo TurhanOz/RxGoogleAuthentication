@@ -1,4 +1,4 @@
-package com.turhanoz.rxgoogleauthentication;
+package com.turhanoz.android.rxgoogleauthentication;
 
 public interface AuthCallback {
     public void onTokenReceived(AuthToken token);
