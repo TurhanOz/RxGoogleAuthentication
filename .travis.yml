@@ -9,3 +9,4 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - extra-android-support
+    - addon-google_apis-google-23
