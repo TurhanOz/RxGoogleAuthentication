@@ -1,4 +1,7 @@
 # Android RxGoogleAuthentication
+[![Build Status](https://travis-ci.org/TurhanOz/RxGoogleAuthentication.svg?branch=master)](https://travis-ci.org/TurhanOz/RxGoogleAuthentication)
+[![Stories in Ready](https://badge.waffle.io/TurhanOz/RxGoogleAuthentication.png?label=ready&title=Ready)](https://waffle.io/TurhanOz/RxGoogleAuthentication)
+
 A simple android library that lets you easily get an authentication token for the Google Apis.
 
 This library has been developed using RxJava. It also integrates relevant unit tests and a sample application.
