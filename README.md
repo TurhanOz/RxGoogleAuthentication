@@ -7,7 +7,12 @@ A simple android library that lets you easily get an authentication token for th
 This library has been developed using RxJava. It also integrates relevant unit tests and a sample application.
 
 ### Motivation
-TBD
+If you are an android developer, chances are that you will, one day or another, use one of the Google Rest Apis.
+Most of the Google Rest Apis require authentication. So you'll start reading the [documentation](https://developers.google.com/android/guides/http-auth) in order to understand how to get authenticated.
+The more I looked to that documentation, the more I was sceptical about the sample code provided in it. Indeed, the token fetched is done through a [AsyncTask](http://jdam.cd/async-android/). As a matter of fact, notifying the Ui is done is done though runOnUiThread() in case of Exception...
+Lot's of 'stuff' I dislike. And no code quality given with the snipets...
+
+So I decided to create this library, using RxJava and providing clean Unit Tests.
 
 ## Usage
 
@@ -43,8 +48,35 @@ targetSdkVersion 23
 ### Usage
 
 ```java
-//TBD
+//trigger a token request by using this builder:
+private void fetchToken(){
+    new AuthSubscription()
+        .setEmail("email")
+        .setScope("scope")
+        .setActivity(getActivity())
+        .setCallback(this)
+        .buildAndSubscribe();
+}
+//get token through this callback
+public interface AuthCallback {
+    public void onTokenReceived(AuthToken token);
+    public void onError(Throwable e);
+}
 
+//relevant exceptions are handled silently by the library
+//such as GooglePlayServicesAvailabilityException and UserRecoverableAuthException
+//in case of another kind of exceptions, you can handle it on the OnActivityResult callback
+//in your fragment or activity
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if ((requestCode == AuthObserver.REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR)
+        && resultCode == getActivity().RESULT_OK) {
+        // Receiving a result that follows a GoogleAuthException, try auth again
+        fetchToken();
+        } else if (resultCode == getActivity().RESULT_CANCELED) {
+            //notify ui
+        }
+    }
 ```
 
 License
