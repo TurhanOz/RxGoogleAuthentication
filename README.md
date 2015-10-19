@@ -1,5 +1,6 @@
 # Android RxGoogleAuthentication
 [![Build Status](https://travis-ci.org/TurhanOz/RxGoogleAuthentication.svg?branch=master)](https://travis-ci.org/TurhanOz/RxGoogleAuthentication)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.0.1-blue.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rxgoogleauthentication%22)
 [![Stories in Ready](https://badge.waffle.io/TurhanOz/RxGoogleAuthentication.png?label=ready&title=Ready)](https://waffle.io/TurhanOz/RxGoogleAuthentication)
 
 A simple android library that lets you easily get an authentication token for the Google Apis.
