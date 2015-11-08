@@ -1,6 +1,7 @@
 # Android RxGoogleAuthentication
 [![Build Status](https://travis-ci.org/TurhanOz/RxGoogleAuthentication.svg?branch=master)](https://travis-ci.org/TurhanOz/RxGoogleAuthentication)
 [![Maven Central](https://img.shields.io/badge/maven--central-0.0.1-blue.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rxgoogleauthentication%22)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxGoogleAuthentication-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/2746)
 [![Stories in Ready](https://badge.waffle.io/TurhanOz/RxGoogleAuthentication.png?label=ready&title=Ready)](https://waffle.io/TurhanOz/RxGoogleAuthentication)
 
 A simple android library that lets you easily get an authentication token for the Google Apis.
@@ -58,6 +59,7 @@ private void fetchToken(){
         .setCallback(this)
         .buildAndSubscribe();
 }
+
 //get token through this callback
 public interface AuthCallback {
     public void onTokenReceived(AuthToken token);
@@ -72,8 +74,8 @@ public interface AuthCallback {
 public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if ((requestCode == AuthObserver.REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR)
         && resultCode == getActivity().RESULT_OK) {
-        // Receiving a result that follows a GoogleAuthException, try auth again
-        fetchToken();
+            // Receiving a result that follows a GoogleAuthException, try auth again
+            fetchToken();
         } else if (resultCode == getActivity().RESULT_CANCELED) {
             //notify ui
         }
