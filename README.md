@@ -16,6 +16,9 @@ Lot's of 'stuff' I dislike. And no code quality given with the snipets...
 
 So I decided to create this library, using RxJava and providing clean Unit Tests.
 
+#### Update
+You can also use [Google Sign-In](https://developers.google.com/identity/sign-in/android/) as part of the Google Play Services. This API is more elegant and allows easy oauth2 flow.
+
 ## Usage
 
 ### From Maven Central
