@@ -1,89 +1,121 @@
-# Android RxGoogleAuthentication
+# Google API-Authentication library
 [![Build Status](https://travis-ci.org/TurhanOz/RxGoogleAuthentication.svg?branch=master)](https://travis-ci.org/TurhanOz/RxGoogleAuthentication)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.0.1-blue.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rxgoogleauthentication%22)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxGoogleAuthentication-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/2746)
-[![Stories in Ready](https://badge.waffle.io/TurhanOz/RxGoogleAuthentication.png?label=ready&title=Ready)](https://waffle.io/TurhanOz/RxGoogleAuthentication)
+![Library version](https://img.shields.io/badge/library--version-2.0.0-blue.svg)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyAuth-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/2746)
 
-A simple android library that lets you easily get an authentication token for the Google Apis.
 
-This library has been developed using RxJava. It also integrates relevant unit tests and a sample application.
 
-### Motivation
-If you are an android developer, chances are that you will, one day or another, use one of the Google Rest Apis.
-Most of the Google Rest Apis require authentication. So you'll start reading the [documentation](https://developers.google.com/android/guides/http-auth) in order to understand how to get authenticated.
-The more I looked to that documentation, the more I was sceptical about the sample code provided in it. Indeed, the token fetched is done through a [AsyncTask](http://jdam.cd/async-android/). As a matter of fact, notifying the Ui is done is done though runOnUiThread() in case of Exception...
-Lot's of 'stuff' I dislike. And no code quality given with the snipets...
+> Fetching Google OAuth tokens was never easy
 
-So I decided to create this library, using RxJava and providing clean Unit Tests.
+An android library through which you can easily fetch access tokens for Google APIs. Now assign the work of authentication to this library and concentrate on your main work.
 
-#### Update
-You can also use [Google Sign-In](https://developers.google.com/identity/sign-in/android/) as part of the Google Play Services. This API is more elegant and allows easy oauth2 flow.
+![image](https://user-images.githubusercontent.com/65817230/158441396-489128d3-2499-4242-9581-4637637639cf.png)
+
+## Features
+- Easily get access and refresh tokens.
+- Auto refreshing access token
+- Auto validation, expiration, and fetching of tokens
+- Smooth google sign-in flow with callbacks
+
+
+## Implementation
+Add it in your root build.gradle at the end of repositories:
+```java
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+in your module (app) build.gradle:
+```groovy
+	dependencies {
+	      implementation 'com.github.ErrorxCode:RxGoogleAuthentication:Tag'
+	}
+```
+
+## Acknowledgement
+- [Google oauth2](https://developers.google.com/identity/protocols/oauth2)
+- [Mobile authentication](https://developers.google.com/identity/protocols/oauth2/native-app)
+- [Google sing-in](https://developers.google.com/identity/sign-in/android/start-integrating)
+
 
 ## Usage
-
-### From Maven Central
-
-Library releases are available on Maven Central; you can add dependencies as follow :
-
-**Gradle**
-
-```groovy
-compile 'com.turhanoz.android.rxgoogleauthentication:0.0.1@aar'
-```
-**Maven**
-
-```xml
-<dependency>
-  <groupId>com.turhanoz.android</groupId>
-  <artifactId>rxgoogleauthentication</artifactId>
-  <version>0.0.1</version>
-  <type>aar</type>
-</dependency>
-```
-
-### Supported Android SDK
-
-You can use this library for apps starting from android 2.3.3 (gingerbread /API 10) to android 6 (marshmallow / API 23)
-
-```
-minSdkVersion 10
-targetSdkVersion 23
-```
-
-### Usage
-
+**First of all**, initialize the library passing your cloud credentials.
 ```java
-//trigger a token request by using this builder:
-private void fetchToken(){
-    new AuthSubscription()
-        .setEmail("email")
-        .setScope("scope")
-        .setActivity(getActivity())
-        .setCallback(this)
-        .buildAndSubscribe();
-}
+EasyAuth easyAuth = new EasyAuth(CLIENT_ID,CLIENT_SECRET);
+```
+**Note:** Both of these must be of *Web application* credentials.
+**Note:** All the methods run synchronously, put this in the background thread if needed.
 
-//get token through this callback
-public interface AuthCallback {
-    public void onTokenReceived(AuthToken token);
-    public void onError(Throwable e);
-}
 
-//relevant exceptions are handled silently by the library
-//such as GooglePlayServicesAvailabilityException and UserRecoverableAuthException
-//in case of another kind of exceptions, you can handle it on the OnActivityResult callback
-//in your fragment or activity
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if ((requestCode == AuthObserver.REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR)
-        && resultCode == getActivity().RESULT_OK) {
-            // Receiving a result that follows a GoogleAuthException, try auth again
-            fetchToken();
-        } else if (resultCode == getActivity().RESULT_CANCELED) {
-            //notify ui
-        }
+
+### Automatic way
+To automatically get access token, use `autoRefreshingAccessToken()` method.
+```java
+String accessToken = easyAuth.autoRefreshingAccessToken(this, API_SCOPE);
+```
+You also need to overwride `onActivityResult` and call `easyAuth.onActivityResult()` method in that.
+```java
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        easyAuth.onActivityResult(resultCode, data, "https://your.redirect.url", new EasyAuth.LoginFlowCallback() {
+            @Override
+            public void onSuccess(@NonNull String accessToken, @NonNull String refreshToken, @NonNull String authorizationCode) {
+                // Get your access token from here.
+            }
+
+            @Override
+            public void onFailed(@NonNull Exception e) {
+                // Check the exception
+            }
+        });
     }
 ```
+For the first time, it will return null and starts the sign-in flow. You will receive your access token as a result of that sign-in flow.
+
+
+### Manual way
+If you already have an authorization code or refresh token, you can also manually fetch an access tokens from them.
+```java
+try {
+    String refreshToken = easyAuth.getRefreshCode("AUTHORIZATION_CODE");  // Save this for future.
+    String accessToken = easyAuth.getAccessToken(refreshToken);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+```
+**Note:** AUTHORIZATION_CODE can only be used once. So in this way, you have to save `refreshToken` on the device to get **access_token** directly.
+
+If you don't have an authorization code, you can get one by authentication user with a google account.
+```java
+easyAuth.startLoginFlow(this,"API_SCOPE");
+```
+You also need to overwride `onActivityResult` and call `easyAuth.onActivityResult()` method in that.
+```java
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        easyAuth.onActivityResult(resultCode, data, "https://your.redirect.url", new EasyAuth.LoginFlowCallback() {
+            @Override
+            public void onSuccess(@NonNull String accessToken, @NonNull String refreshToken, @NonNull String authorizationCode) {
+                // Get your access token from here.
+            }
+
+            @Override
+            public void onFailed(@NonNull Exception e) {
+                // Check the exception
+            }
+        });
+    }
+```
+
+### That's it
+Yhe, Now it's easy to manage auth tokens. It's time to contribute now. You can add different scopes constant in this class.
 
 License
 -------
