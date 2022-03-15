@@ -1,28 +1,23 @@
 package com.xcoder.easyauth;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.StrictMode;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANResponse;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.URL;
 import java.util.concurrent.CancellationException;
 
 /**
@@ -38,6 +33,7 @@ public class EasyAuth {
     public EasyAuth(@NonNull String clientId, @NonNull String clientSecret) {
         CLIENT_ID = clientId;
         CLIENT_SECRET = clientSecret;
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
     }
 
     /**
@@ -51,8 +47,16 @@ public class EasyAuth {
         ANResponse<JSONObject> response = AndroidNetworking.post("https://oauth2.googleapis.com/token?" + query).build().executeForJSONObject();
         if (response.isSuccess())
             return response.getResult().optString("access_token");
-        else
-            throw new Exception(response.getError().getErrorBody());
+        else {
+            try {
+                if (InetAddress.getByName("google.com").isReachable(10000))
+                    throw new Exception(response.getError().getErrorBody());
+                else
+                    throw new ConnectException("Can't connect to google servers. Is your internet on ?");
+            } catch (IOException e) {
+                throw new ConnectException("Can't connect to google servers. Is your internet on ?");
+            }
+        }
     }
 
 
@@ -71,8 +75,16 @@ public class EasyAuth {
         ANResponse<JSONObject> response = AndroidNetworking.post("https://oauth2.googleapis.com/token?" + query).build().executeForJSONObject();
         if (response.isSuccess())
             return response.getResult().optString("refresh_token");
-        else
-            throw new Exception(response.getError().getErrorBody());
+        else {
+            try {
+                if (InetAddress.getByName("google.com").isReachable(10000))
+                    throw new Exception(response.getError().getErrorBody());
+                else
+                    throw new ConnectException("Can't connect to google servers. Is your internet on ?");
+            } catch (IOException e) {
+                throw new ConnectException("Can't connect to google servers. Is your internet on ?");
+            }
+        }
     }
 
 
@@ -89,7 +101,7 @@ public class EasyAuth {
      * @return Access-token that can be used for authentication google APis, null if failed to get.
      */
     public String autoRefreshingAccessToken(@NonNull Activity context, @NonNull String scope) {
-        pref = context.getSharedPreferences("tokens",0);
+        pref = context.getSharedPreferences("tokens", 0);
         refreshToken = pref.getString("refresh_token", "");
         try {
             if (refreshToken.isEmpty()) {
@@ -115,8 +127,8 @@ public class EasyAuth {
                 .requestScopes(new Scope(scope))
                 .build();
         Intent intent = GoogleSignIn.getClient(activity, options).getSignInIntent();
-        pref = activity.getSharedPreferences("tokens",0);
-        activity.startActivityForResult(intent,0);
+        pref = activity.getSharedPreferences("tokens", 0);
+        activity.startActivityForResult(intent, 0);
     }
 
 
@@ -124,13 +136,14 @@ public class EasyAuth {
      * Exchanges authorization token with access token. Once user chooses account and allows permissions (popup is closed)
      * {@code onActivityResult()} is fired. You must call this in that {@code onActivityResult()} method. If this method is not called,
      * access token would not be fetched and nothing will happen.
-     * @param resultCode The activity result code.
-     * @param data Activity result data
+     *
+     * @param resultCode  The activity result code.
+     * @param data        Activity result data
      * @param redirectUrl Your redirectUrl which is configured at the time of creating Oauth2 credentials.
-     * @param callback A callback which will be fired when the sign-in flow is completed.
+     * @param callback    A callback which will be fired when the sign-in flow is completed.
      */
-    public void onActivityResult(int resultCode,Intent data,@NonNull String redirectUrl,@NonNull LoginFlowCallback callback){
-        if (resultCode == Activity.RESULT_OK && pref != null){
+    public void onActivityResult(int resultCode, Intent data, @NonNull String redirectUrl, @NonNull LoginFlowCallback callback) {
+        if (resultCode == Activity.RESULT_OK && pref != null) {
             GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     String code = task.getResult().getServerAuthCode();
@@ -139,11 +152,11 @@ public class EasyAuth {
                             .addBodyParameter("client_id", CLIENT_ID)
                             .addBodyParameter("client_secret", CLIENT_SECRET)
                             .addBodyParameter("grant_type", "authorization_code")
-                            .addBodyParameter("redirect_uri",redirectUrl).build().executeForJSONObject();
+                            .addBodyParameter("redirect_uri", redirectUrl).build().executeForJSONObject();
 
-                    if (response.isSuccess()){
+                    if (response.isSuccess()) {
                         String token = response.getResult().optString("refresh_token");
-                        pref.edit().putString("refresh_token",token).apply();
+                        pref.edit().putString("refresh_token", token).apply();
                         callback.onSuccess(response.getResult().optString("access_token"), token, code);
                     } else {
                         callback.onFailed(new Exception(response.getError().getErrorBody()));
@@ -169,6 +182,7 @@ public class EasyAuth {
      */
     public interface LoginFlowCallback {
         void onSuccess(@NonNull String accessToken, @NonNull String refreshToken, @NonNull String authorizationCode);
+
         void onFailed(@NonNull Exception e);
     }
 }
