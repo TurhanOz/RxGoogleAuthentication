@@ -31,7 +31,7 @@ Add it in your root build.gradle at the end of repositories:
 in your module (app) build.gradle:
 ```groovy
 	dependencies {
-	      implementation 'com.github.ErrorxCode:RxGoogleAuthentication:Tag'
+	      implementation 'com.github.ErrorxCode:RxGoogleAuthentication: 2.0.0'
 	}
 ```
 
